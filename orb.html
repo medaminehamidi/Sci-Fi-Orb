@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sci-Fi Orb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1f1f1f;
+            margin: 0;
+            flex-direction: column;
+            color: white;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .orb {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, #fff, #bbb);
+            border-radius: 50%;
+            box-shadow: 0 0 50px #fff, 0 0 90px #ddd;
+            cursor: pointer;
+            position: relative;
+            animation: pulse 3s infinite alternate;
+            transition: box-shadow 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes talking {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            75% {
+                transform: scale(1.1);
+            }
+        }
+
+        .quote {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5em;
+            text-align: center;
+            opacity: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            width: 90%;
+        }
+
+        .history {
+            position: absolute;
+            top: 10px;
+            width: 80%;
+            text-align: center;
+            font-size: 1em;
+            opacity: 0.5;
+            max-height: 100px;
+            overflow-y: scroll;
+            /* Allow vertical scrolling */
+            scrollbar-width: none;
+            /* For Firefox */
+            -ms-overflow-style: none;
+            /* For Internet Explorer 10+ */
+        }
+
+        .history::-webkit-scrollbar {
+            display: none;
+            /* For Chrome, Safari, and Edge */
+        }
+
+        .input-container {
+            position: absolute;
+            bottom: 100px;
+            text-align: center;
+            width: 100%;
+        }
+
+        input {
+            font-size: 1.2em;
+            padding: 10px;
+            border: none;
+            background: none;
+            outline: none;
+            font-family: 'Quicksand', sans-serif;
+            color: white;
+            width: 80%;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="history" id="history"></div>
+    <div class="orb" id="orb" onclick="getResponse()"></div>
+    <div class="input-container">
+        <input type="text" id="question" placeholder="Ask the orb a question..." autocomplete="off">
+    </div>
+    <div class="quote-container">
+        <div class="quote" id="quote"></div>
+    </div>
+    <script>
+        const responses = {
+            affirmative: [
+                "Yes, certainly.",
+                "Without a doubt.",
+                "Absolutely!",
+                "It is decided so.",
+                "For sure.",
+                "Definitely yes.",
+                "No question about it.",
+                "Of course!",
+                "Absolutely, without hesitation.",
+                "You can count on it.",
+                "Definitely!",
+                "I agree completely.",
+                "It's a yes from me.",
+                "That's a solid yes.",
+                "Without a second thought.",
+                "I’m sure of it.",
+                "Yes, without question.",
+                "Most definitely.",
+                "Indeed, absolutely."
+            ],
+            negative: [
+                "No, I don't think so.",
+                "Unlikely.",
+                "Not at all.",
+                "I doubt it.",
+                "Definitely not.",
+                "Not in a million years.",
+                "I don’t believe so.",
+                "I don’t think that’s the case.",
+                "Probably not.",
+                "It’s highly unlikely.",
+                "Not happening.",
+                "It’s not going to work.",
+                "No chance.",
+                "That’s a no from me.",
+                "I would say no.",
+                "I wouldn’t bet on it.",
+                "I can’t see that happening.",
+                "Nope.",
+                "Absolutely not.",
+                "God is crazy, and what you are doing is meaningless."
+            ],
+            neutral: [
+                "Maybe, who knows?",
+                "It is uncertain.",
+                "Hard to say.",
+                "The answer lies within you.",
+                "I’m not sure.",
+                "It could go either way.",
+                "There’s no clear answer.",
+                "It depends on many factors.",
+                "I don’t have enough information.",
+                "Possibly, but not certain.",
+                "We’ll have to wait and see.",
+                "The future will tell.",
+                "It's a toss-up.",
+                "It could be yes, or it could be no.",
+                "Who can say?",
+                "It’s not clear yet.",
+                "The outcome is still uncertain.",
+                "I’m undecided.",
+                "I can’t give a definite answer."
+            ]
+        };
+
+
+        function getResponse() {
+            const quoteElement = document.getElementById('quote');
+            const orbElement = document.getElementById('orb');
+            const historyElement = document.getElementById('history');
+            const question = document.getElementById('question').value.trim();
+
+            if (!question) return;
+
+            let category;
+            const rand = Math.random();
+            if (rand < 0.33) {
+                category = 'affirmative';
+                orbElement.style.boxShadow = "0 0 25px rgba(0, 255, 0, 0.5), 0 0 50px rgba(0, 255, 0, 0.3)";
+            } else if (rand < 0.66) {
+                category = 'negative';
+                orbElement.style.boxShadow = "0 0 25px rgba(255, 99, 71, 0.6), 0 0 50px rgba(255, 69, 58, 0.3)";
+            } else {
+                category = 'neutral';
+                orbElement.style.boxShadow = "0 0 25px rgba(30, 144, 255, 0.5), 0 0 50px rgba(30, 144, 255, 0.3)";
+            }
+
+
+
+            const response = responses[category][Math.floor(Math.random() * responses[category].length)];
+            quoteElement.textContent = "";
+            quoteElement.style.opacity = 1;
+            let i = 0;
+            orbElement.style.animation = "talking 1s infinite ease-in-out";
+
+            function typeWriter() {
+                if (i < response.length) {
+                    quoteElement.textContent += response.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                } else {
+                    orbElement.style.animation = "pulse 3s infinite alternate";
+                }
+            }
+            typeWriter();
+
+            historyElement.innerHTML += `<p>${question} → ${response}</p>`;
+            historyElement.scrollTop = historyElement.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>
